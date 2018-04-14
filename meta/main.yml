@@ -1,0 +1,14 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: k-miyabe
+  description: Vuls installation for Linux.
+  license: license (MIT)
+  min_ansible_version: 2.0
+  platforms:
+    - name: EL
+      versions:
+      - 7,0
+  galaxy_tags:
+    - security

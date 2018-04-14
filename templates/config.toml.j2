@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+[servers]
+
+{% if vuls_target_servers %}
+{% for server in vuls_target_servers %}
+[servers.{{ server.name }}]
+{% if server.host %}
+host        = "{{ server.host }}"
+{% endif %}
+{% if server.port %}
+port        = "{{ server.port }}"
+{% endif %}
+{% if server.user %}
+user        = "{{ server.user }}"
+{% endif %}
+{% if server.key_path %}
+keyPath     = "{{ server.key_path }}"
+{% endif %}
+{% endfor %}
+{% endif %}

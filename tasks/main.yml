@@ -1,0 +1,82 @@
+---
+# Include OS-specific installation tasks.
+- include: setup-RedHat.yml
+  when:
+    - ansible_os_family == 'RedHat'
+
+- name: Add golang bin directory to global $PATH.
+  template:
+    src: goenv.sh.j2
+    dest: /etc/profile.d/goenv.sh
+    mode: 0644
+
+- name: Create Vuls log directory if it does not exist.
+  file:
+    path: /var/log/vuls
+    state: directory
+    mode: 0700
+
+- name: Deploy go-cve-dictionary.
+  block:
+    - name: Clone go-cve-dictionary.
+      git:
+        repo: '{{ vuls_go_cve_dictionary_repo }}'
+        dest: '{{ vuls_gopath }}/src/github.com/kotakanbe/go-cve-dictionary'
+      register: go-cve-dictionary_src
+
+    - name: Make Install go-cve-dictionary.
+      make:
+        chdir: '{{ vuls_gopath }}/src/github.com/kotakanbe/go-cve-dictionary'
+        target: install
+
+- name: Deploy goval-dictionary.
+  block:
+    - name: Clone goval-dictionary.
+      git:
+        repo: '{{ vuls_goval_dictionary_repo }}'
+        dest: '{{ vuls_gopath }}/src/github.com/kotakanbe/goval-dictionary'
+      register: goval-dictionary_src
+
+    - name: Make Install goval-dictionary.
+      make:
+        chdir: '{{ vuls_gopath }}/src/github.com/kotakanbe/goval-dictionary'
+        target: install
+
+- name: Deploy Vuls.
+  block:
+    - name: Remove old Vuls.
+      file:
+        state: absent
+        path: "{{ vuls_gopath }}/{{item}}"
+      with_items:
+        - '/pkg/linux_amd64/github.com/future-architect/vuls/'
+        - '/src/github.com/future-architect/vuls/'
+      when: vuls_keep_updated
+
+    - name: Clone Vuls.
+      git:
+        repo: '{{ vuls_repo }}'
+        dest: '{{ vuls_gopath }}/src/github.com/future-architect/vuls'
+      register: vuls_src
+
+    - name: Make Install Vuls.
+      make:
+        chdir: '{{ vuls_gopath }}/src/github.com/future-architect/vuls'
+        target: install
+
+- name: Create Vuls workspace if it does not exist.
+  file:
+    path: "{{ vuls_workdir }}"
+    state: directory
+    owner: root
+    group: root
+    mode:  0700
+
+- name: Copy config.toml.
+  template:
+    src: config.toml.j2
+    dest: "{{ vuls_workdir }}/config.toml"
+    owner: root
+    group: root
+    mode: 0600
+    force: "{{ vuls_overwrite_conf }}"
