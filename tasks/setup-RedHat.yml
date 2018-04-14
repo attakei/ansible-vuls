@@ -1,0 +1,23 @@
+---
+- name: Add repo file into /etc/yum.repos.d/city-fan.repo.
+  copy:
+    src: ../files/city-fan.repo
+    dest: /etc/yum.repos.d/city-fan.repo
+
+- name: Update cURL and NSS to the latest version.
+  yum: "name={{ item  }} state=latest"
+  with_items:
+    - libcurl
+    - nss
+
+- name: Install packages required to Vuls.
+  yum: "name={{ item }} state=present"
+  with_items:
+    - sqlite
+    - git
+    - gcc
+    - make
+    - wget
+    - go
+    - yum-plugin-changelog
+    - yum-utils

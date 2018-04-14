@@ -1,0 +1,23 @@
+---
+# defaults file for vuls
+vuls_gopath: ~/opt/go
+vuls_go_cve_dictionary_repo: https://github.com/kotakanbe/go-cve-dictionary.git
+vuls_goval_dictionary_repo: https://github.com/kotakanbe/goval-dictionary.git
+vuls_repo: https://github.com/future-architect/vuls.git
+
+vuls_workdir: ~/vuls
+vuls_keep_updated: false
+vuls_overwrite_conf: true
+
+# Scanning target servers
+vuls_target_servers:
+  - name: "localhost"
+    host: "localhost"
+    port: "local"
+    user: ""
+    key_path: ""
+#  - name: "example"
+#    host: "192.168.33.11"
+#    port: "22"
+#    user: "user"
+#    key_path: "/home/user/.ssh/id_rsa"
