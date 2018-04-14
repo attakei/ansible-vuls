@@ -9,6 +9,6 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-      - 7,0
+      - 7.0
   galaxy_tags:
     - security
